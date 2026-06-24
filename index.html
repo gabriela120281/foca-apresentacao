@@ -138,15 +138,17 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
 .centerblock .bold{display:inline}
 /* slide 8 pizza */
 .piewrap{display:flex;align-items:center;justify-content:center;gap:26px}
-.pie{width:230px;height:230px;border-radius:50%;border:4px solid #000;flex:0 0 230px;
+.pie{width:200px;height:200px;border-radius:50%;border:4px solid #000;flex:0 0 200px;
   background:conic-gradient(
     var(--blue) 0deg 144.7deg,
     #5b78e8 144.7deg 282.2deg,
     #b9c4f2 282.2deg 360deg);
   box-shadow:6px 6px 0 #000}
-.legend{display:flex;flex-direction:column;gap:12px}
-.legend .li{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600}
-.legend .sw{width:24px;height:24px;border:2px solid #000;flex:0 0 24px}
+.legend{display:flex;flex-direction:column;gap:16px}
+.legend .li{display:flex;align-items:flex-start;gap:10px}
+.legend .sw{width:22px;height:22px;border:2px solid #000;flex:0 0 22px;margin-top:3px}
+.legend .lt{font-size:20px;font-weight:700;line-height:1.1}
+.legend .ld{font-size:15px;font-weight:500;color:#333;line-height:1.25;margin-top:2px;max-width:300px}
 /* slide 10 grid de requisitos do sistema */
 .sysgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;max-width:1080px;margin:0 auto;width:100%}
 .sysitem{display:flex;gap:12px;align-items:flex-start;background:#f5f6fa;border:2px solid #000;padding:9px 14px}
@@ -159,7 +161,8 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
 .chead{background:linear-gradient(#f1f1f1,#cdcdcd);border:3px solid #000;box-shadow:5px 5px 0 #000;
   padding:10px;text-align:center;font-size:20px;font-weight:700;letter-spacing:.5px;margin-bottom:18px}
 /* ferramentas (slide 12) */
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:20px 60px;max-width:1050px;margin:0 auto;width:100%;align-items:center}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:40px 60px;max-width:1050px;margin:0 auto;width:100%;
+  flex:1;align-items:center;align-content:center}
 .tool{display:flex;align-items:center;gap:22px}
 .tool .logo{flex:0 0 150px;height:90px;display:flex;align-items:center;justify-content:center}
 .tool .logo img{max-width:150px;max-height:88px;object-fit:contain}
@@ -341,9 +344,9 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
     <!-- 8 ANÁLISE DOS DADOS - pizza -->
     <section class="slide" data-label="ANÁLISE DOS DADOS">
       <div class="row top">
-        <div class="col" style="flex:1.1">
-          <ul class="clean" style="margin-top:8px">
-            <li><span class="bold">Diagnóstico tardio:</span> a maioria tem entre 25 e 34 anos; mais de
+        <div class="col" style="flex:1.1;align-self:stretch;display:flex;flex-direction:column;justify-content:center">
+          <ul class="clean" style="font-size:23px">
+            <li style="margin-bottom:40px"><span class="bold">Diagnóstico tardio:</span> a maioria tem entre 25 e 34 anos; mais de
             <span class="bold">78%</span> só descobriram o TDAH na idade adulta.</li>
             <li><span class="bold">Apoio médico:</span> <span class="bold">73%</span> dependem de medicação
             (ex.: Ritalina/Venvanse) para conseguir estudar.</li>
@@ -354,9 +357,15 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
           <div class="piewrap">
             <div class="pie" aria-label="Gráfico das principais barreiras"></div>
             <div class="legend">
-              <div class="li"><span class="sw" style="background:var(--blue)"></span>Inconstância — 80%</div>
-              <div class="li"><span class="sw" style="background:#5b78e8"></span>Procrastinação — 76%</div>
-              <div class="li"><span class="sw" style="background:#b9c4f2"></span>Desorganização — 43%</div>
+              <div class="li"><span class="sw" style="background:var(--blue)"></span>
+                <div><div class="lt">Inconstância — 80%</div>
+                <div class="ld">Dificuldade em manter a rotina de estudos a longo prazo.</div></div></div>
+              <div class="li"><span class="sw" style="background:#5b78e8"></span>
+                <div><div class="lt">Procrastinação — 76%</div>
+                <div class="ld">Bloqueio severo na hora de iniciar os estudos.</div></div></div>
+              <div class="li"><span class="sw" style="background:#b9c4f2"></span>
+                <div><div class="lt">Desorganização — 43%</div>
+                <div class="ld">Falta de planejamento e de um cronograma claro.</div></div></div>
             </div>
           </div>
           <p style="text-align:center;font-size:15px;color:#555;margin-top:14px">
@@ -367,13 +376,13 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
 
     <!-- 9 ANÁLISE DOS DADOS 2 -->
     <section class="slide" data-label="ANÁLISE DOS DADOS">
-      <h2 class="cap" style="margin-bottom:14px">ESTRATÉGIAS QUE FUNCIONAM NA PRÁTICA</h2>
-      <ul class="clean">
-        <li><span class="bold">Estudo ativo:</span> responder questões e simulados é o método mais eficaz
+      <h2 class="cap" style="margin-bottom:26px">ESTRATÉGIAS QUE FUNCIONAM NA PRÁTICA</h2>
+      <ul class="clean" style="font-size:24px">
+        <li style="margin-bottom:28px"><span class="bold">Estudo ativo:</span> responder questões e simulados é o método mais eficaz
         (85% de preferência).</li>
-        <li><span class="bold">Estímulo visual:</span> mapas mentais e flashcards funcionam melhor do que
+        <li style="margin-bottom:28px"><span class="bold">Estímulo visual:</span> mapas mentais e flashcards funcionam melhor do que
         leituras longas de PDFs.</li>
-        <li><span class="bold">Tempo adaptado:</span> ciclos curtos de foco (Técnica Pomodoro) para evitar
+        <li style="margin-bottom:28px"><span class="bold">Tempo adaptado:</span> ciclos curtos de foco (Técnica Pomodoro) para evitar
         a dispersão.</li>
         <li><span class="bold">Fatores críticos:</span> noites de sono regulares (essenciais para o efeito
         do remédio) e ambiente sem distrações/celular.</li>
@@ -479,7 +488,7 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
     <!-- 15 OBRIGADA -->
     <section class="slide" data-label="OBRIGADA">
       <div class="centerall" style="flex-direction:column;gap:18px">
-        <img src="img/mascote_foca.png" alt="Mascote FOCA" style="max-height:230px">
+        <img src="img/mascote_palmas.gif" alt="Foca batendo palmas" style="max-height:250px">
         <div class="thanks">OBRIGADA!</div>
         <div style="font-size:20px;font-weight:600;letter-spacing:1px">GRUPO FOCA · SENAC PALHOÇA</div>
       </div>
