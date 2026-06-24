@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto FOCA — Assistente de Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1B3FD9;
+  --blue-d:#142fa8;
+  --ink:#101010;
+  --desktop:#9a9a9a;
+  --box:#dcdcdc;
+  --box-hi:#f4f4f4;
+  --box-lo:#bfbfbf;
+  --accent:#1B3FD9;
+  /* escala tipográfica padronizada (px no palco 1280x720) */
+  --fs-winttl:30px;
+  --fs-label:24px;
+  --fs-bigtitle:42px;
+  --fs-h:27px;
+  --fs-body:23px;
+  --fs-small:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;overflow:hidden;background:#6f6f6f;
+  font-family:'IBM Plex Mono',monospace;color:var(--ink)}
+/* ===== Palco fixo 1280x720, escalado para a tela (ideal p/ auditório) ===== */
+#stage{
+  position:absolute;top:50%;left:50%;
+  width:1280px;height:720px;
+  transform-origin:center center;
+  background:var(--desktop);
+  border:2px solid #000;
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 4px #000, 0 30px 80px rgba(0,0,0,.55);
+}
+/* ===== Barra de título azul (igual em TODAS as telas) ===== */
+.titlebar{
+  height:56px;flex:0 0 56px;background:var(--blue);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;border-bottom:2px solid #000;
+}
+.winttl{color:#fff;font-weight:700;font-size:var(--fs-winttl);letter-spacing:1px}
+.wbtns{display:flex;gap:7px}
+.wbtn{width:34px;height:30px;background:#dcdcdc;border:2px solid #000;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  font-weight:700;cursor:pointer;line-height:1}
+.wbtn:active{background:#aaa}
+/* ===== Rótulo de seção (breadcrumb) padronizado ===== */
+.seclabel{
+  height:46px;flex:0 0 46px;background:#fff;border-bottom:2px solid #000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;font-size:var(--fs-label);letter-spacing:2px;font-weight:600;
+}
+.seclabel .right{letter-spacing:2px}
+/* ===== Área de conteúdo ===== */
+.content{flex:1 1 auto;background:#fff;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;padding:26px 40px;display:none;flex-direction:column}
+.slide.active{display:flex}
+/* ===== Rodapé padronizado + barra de progresso ALINHADA ===== */
+.footer{flex:0 0 64px;height:64px;background:var(--desktop);border-top:2px solid #000;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;padding:5px 8px}
+.footstrip{display:flex;justify-content:space-between;align-items:center;
+  padding:0 8px;font-size:var(--fs-small);font-weight:600;letter-spacing:1px;color:#1a1a1a}
+.footstrip .ctr{color:#222}
+.scrollbar{display:flex;align-items:center;gap:0;height:26px}
+.arrow{width:40px;height:26px;flex:0 0 40px;background:#dcdcdc;border:2px solid #000;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.arrow:active{background:#aaa}
+.track{flex:1 1 auto;height:26px;background:#cfcfcf;border-top:2px solid #000;
+  border-bottom:2px solid #000;position:relative;overflow:hidden}
+.thumb{position:absolute;top:0;height:100%;width:8%;background:linear-gradient(#eee,#bbb);
+  border:2px solid #000;transition:left .25s ease}
+/* ===== Caixa cinza biselada (estilo Win) com ícone "i" ===== */
+.winbox{position:relative;display:inline-block;
+  background:linear-gradient(#f1f1f1,#cdcdcd);
+  border:4px solid #000;box-shadow:8px 8px 0 0 #000;
+  padding:18px 30px;}
+.bigtitle{font-size:var(--fs-bigtitle);font-weight:700;letter-spacing:1px;
+  line-height:1.12;text-align:center;color:#1a1a1a;text-shadow:1px 1px 0 #fff}
+.ibub{position:absolute;top:-22px;left:-22px;width:46px;height:40px;
+  background:#eee;border:3px solid #000;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;z-index:2}
+.ibub:after{content:"";position:absolute;bottom:-12px;left:8px;
+  width:0;height:0;border-left:10px solid transparent;border-top:12px solid #000}
+.ibub i{font-style:italic;font-weight:700;color:var(--blue);font-size:24px;
+  font-family:Georgia,serif;line-height:1}
+/* ===== Tipografia de conteúdo padronizada ===== */
+.lead{font-size:var(--fs-body);line-height:1.5;font-weight:600}
+h2.cap{font-size:var(--fs-h);font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.bold{font-weight:700}
+ul.clean{list-style:none}
+ul.clean li{position:relative;padding-left:22px;font-size:var(--fs-body);
+  line-height:1.45;margin-bottom:10px;font-weight:500}
+ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font-weight:700}
+/* ===== Slide 1 capa ===== */
+.cover{flex:1;display:flex;align-items:center;justify-content:center;gap:30px}
+.cover .txt{flex:1;text-align:center}
+.cover .pre{font-size:30px;font-weight:500;letter-spacing:1px}
+.cover .foca{font-family:'Poppins',sans-serif;font-weight:800;color:var(--blue);
+  font-size:150px;line-height:.95;letter-spacing:4px}
+.cover .sub{font-size:30px;letter-spacing:8px;font-weight:600;margin-top:4px}
+.cover .date{display:inline-block;margin-top:22px;background:linear-gradient(#eee,#cfcfcf);
+  border:3px solid #000;box-shadow:5px 5px 0 #000;padding:8px 26px;font-size:24px;font-weight:600}
+.cover .mascote{flex:0 0 320px;text-align:center}
+.cover .mascote img{max-height:430px;max-width:320px}
+/* ===== Slide 2 equipe ===== */
+.teamtitle{text-align:center;margin:2px 0 16px}
+.team{display:flex;justify-content:center;gap:14px;flex-wrap:nowrap}
+.member{width:152px;text-align:center}
+.member .ph{width:142px;height:142px;margin:0 auto 8px;border:3px solid #000;
+  background:#000;overflow:hidden;position:relative}
+.member .ph:before{content:"";position:absolute;top:0;left:0;right:0;height:9px;background:var(--blue)}
+.member img{width:100%;height:100%;object-fit:cover;display:block}
+.member .nm{font-size:16px;font-weight:700;letter-spacing:.5px;line-height:1.15}
+.member .rl{font-size:14px;font-weight:500;color:#333;margin-top:2px}
+/* ===== layout duas colunas / três colunas ===== */
+.row{display:flex;gap:30px;flex:1;align-items:center}
+.row.top{align-items:flex-start}
+.col{flex:1}
+.screenshot{border:3px solid #000;max-width:100%;max-height:340px;display:block}
+.tag{position:absolute;right:40px;bottom:14px;font-size:18px;font-weight:600;letter-spacing:1px}
+/* objetivos (slide 6) */
+.objtitle{text-align:center;margin-bottom:14px}
+.objlist{display:flex;flex-direction:column;gap:11px;max-width:1050px;margin:0 auto;width:100%}
+.obj{display:flex;align-items:center;gap:16px;background:#f3f5ff;border:2px solid #000;
+  border-left:9px solid var(--blue);padding:10px 16px}
+.obj .num{flex:0 0 44px;width:44px;height:44px;background:var(--blue);color:#fff;
+  font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;border:2px solid #000}
+.obj .ot{font-size:21px;font-weight:700;letter-spacing:.3px}
+.obj .od{font-size:19px;font-weight:500;color:#222}
+/* metodologia / textos centrais */
+.centerblock{font-size:var(--fs-body);line-height:1.6;text-align:center}
+.centerblock .bold{display:inline}
+/* slide 8 pizza */
+.piewrap{display:flex;align-items:center;justify-content:center;gap:26px}
+.pie{width:230px;height:230px;border-radius:50%;border:4px solid #000;flex:0 0 230px;
+  background:conic-gradient(
+    var(--blue) 0deg 144.7deg,
+    #5b78e8 144.7deg 282.2deg,
+    #b9c4f2 282.2deg 360deg);
+  box-shadow:6px 6px 0 #000}
+.legend{display:flex;flex-direction:column;gap:12px}
+.legend .li{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600}
+.legend .sw{width:24px;height:24px;border:2px solid #000;flex:0 0 24px}
+/* slide 10 grid de requisitos do sistema */
+.sysgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;max-width:1080px;margin:0 auto;width:100%}
+.sysitem{display:flex;gap:12px;align-items:flex-start;background:#f5f6fa;border:2px solid #000;padding:9px 14px}
+.sysitem .ck{flex:0 0 26px;width:26px;height:26px;background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:2px solid #000}
+.sysitem .st{font-size:19px;font-weight:600;line-height:1.25}
+/* slide 11 três colunas */
+.cols3{display:flex;gap:22px;flex:1}
+.cbox{flex:1;display:flex;flex-direction:column}
+.chead{background:linear-gradient(#f1f1f1,#cdcdcd);border:3px solid #000;box-shadow:5px 5px 0 #000;
+  padding:10px;text-align:center;font-size:20px;font-weight:700;letter-spacing:.5px;margin-bottom:18px}
+/* ferramentas (slide 12) */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:20px 60px;max-width:1050px;margin:0 auto;width:100%;align-items:center}
+.tool{display:flex;align-items:center;gap:22px}
+.tool .logo{flex:0 0 150px;height:90px;display:flex;align-items:center;justify-content:center}
+.tool .logo img{max-width:150px;max-height:88px;object-fit:contain}
+.tool .tx .tn{font-size:23px;font-weight:700}
+.tool .tx .td{font-size:19px;font-weight:500;color:#222;line-height:1.35}
+/* referências */
+.refs{display:flex;flex-direction:column;gap:16px;font-size:19px;line-height:1.4;max-width:1120px}
+.ref{padding-left:42px;text-indent:-42px}
+.ref .t{font-weight:700}
+/* genéricos centrais */
+.centerall{flex:1;display:flex;align-items:center;justify-content:center;text-align:center}
+.devmsg{font-size:30px;font-weight:700;line-height:1.5;max-width:900px}
+.thanks{font-family:'Poppins',sans-serif;font-weight:800;font-size:90px;letter-spacing:3px}
+.navhint{position:absolute;left:50%;transform:translateX(-50%);color:#fff;opacity:.7;
+  font-size:15px;font-weight:500;letter-spacing:1px;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="titlebar">
+    <div class="winttl">FOCA</div>
+    <div class="navhint">◄ ►  navegar  ·  tecla F  tela cheia</div>
+    <div class="wbtns">
+      <div class="wbtn" title="Minimizar">_</div>
+      <div class="wbtn" id="fsbtn" title="Tela cheia (F)">▢</div>
+      <div class="wbtn" title="Fechar">✕</div>
+    </div>
+  </div>
+  <div class="seclabel"><span id="lblL"></span><span class="right" id="lblR"></span></div>
+  <div class="content" id="content">
+
+    <!-- 1 CAPA -->
+    <section class="slide" data-label="JOVEM PROGRAMADOR 2026" data-labelr="TURMA 10">
+      <div class="cover">
+        <div class="txt">
+          <div class="pre">Projeto</div>
+          <div class="foca">FOCA</div>
+          <div class="sub">ASSISTENTE DE ESTUDOS</div>
+          <div class="date">26/06/2026</div>
+        </div>
+        <div class="mascote"><img src="img/mascote_foca.png" alt="Mascote FOCA"></div>
+      </div>
+    </section>
+
+    <!-- 2 EQUIPE -->
+    <section class="slide" data-label="EQUIPE">
+      <div class="teamtitle">
+        <div class="winbox"><span class="ibub"><i>i</i></span>
+          <div class="bigtitle">QUEM SÃO OS RESPONSÁVEIS PELO FOCA?</div></div>
+      </div>
+      <div class="team">
+        <div class="member"><div class="ph"><img src="img/foto_rafaella.jpg" alt="Rafaella Ramos"></div>
+          <div class="nm">RAFAELLA RAMOS</div><div class="rl">Analista de Requisitos</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_gabriela.jpg" alt="Gabriela Rocha"></div>
+          <div class="nm">GABRIELA ROCHA</div><div class="rl">Analista de Dados</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_renata.jpg" alt="Renata Cruz"></div>
+          <div class="nm">RENATA CRUZ</div><div class="rl">Gerente de Projeto</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_anna.jpg" alt="Anna Dara"></div>
+          <div class="nm">ANNA DARA</div><div class="rl">Desenvolvedora</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_thais.jpg" alt="Thais Souza"></div>
+          <div class="nm">THAIS SOUZA</div><div class="rl">Designer</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_aline.jpg" alt="Aline Flores"></div>
+          <div class="nm">ALINE FLORES</div><div class="rl">Desenvolvedora</div></div>
+        <div class="member"><div class="ph"><img src="img/foto_tainara.jpg" alt="Tainara Lima"></div>
+          <div class="nm">TAINARA LIMA</div><div class="rl">Analista de Testes</div></div>
+      </div>
+    </section>
+
+    <!-- 3 O QUE É O FOCA -->
+    <section class="slide" data-label="DELIMITAÇÃO DO TEMA">
+      <div class="row">
+        <div class="col" style="flex:0 0 460px">
+          <div class="winbox" style="display:block;margin:0 auto 22px"><span class="ibub"><i>i</i></span>
+            <div class="bigtitle">O QUE É O FOCA?</div></div>
+          <p class="lead">O FOCA é um assistente virtual de estudos para concursos públicos que
+          tem como objetivo organizar a rotina e criar estratégias de estudo eficazes para
+          <span class="bold">pessoas com TDAH</span>.</p>
+        </div>
+        <div class="col" style="text-align:center;position:relative">
+          <img class="screenshot" src="img/print_site.png" alt="Prévia do site FOCA">
+        </div>
+      </div>
+      <div class="tag">ESBOÇO 1.0</div>
+    </section>
+
+    <!-- 4 INTRODUÇÃO E PÚBLICO-ALVO (Opção 1) -->
+    <section class="slide" data-label="INTRODUÇÃO E PÚBLICO-ALVO">
+      <div class="row top">
+        <div class="col" style="flex:2">
+          <h2 class="cap" style="text-align:center">CENÁRIO E MOTIVAÇÃO</h2>
+          <div style="display:flex;gap:26px;margin-top:10px">
+            <div style="flex:1">
+              <div class="winbox" style="display:block;text-align:center;padding:10px 14px">
+                <span class="ibub"><i>i</i></span>
+                <div style="font-size:23px;font-weight:700;letter-spacing:1px">CENÁRIO</div></div>
+              <p class="lead" style="margin-top:16px;font-size:20px">A preparação para concursos exige uma
+              rotina longa e exaustiva. Para quem tem TDAH, o excesso de conteúdo e a falta de estrutura
+              geram sobrecarga cognitiva, desorganização e dificuldade de manter o foco.</p>
+            </div>
+            <div style="flex:1">
+              <div class="winbox" style="display:block;text-align:center;padding:10px 14px">
+                <span class="ibub"><i>i</i></span>
+                <div style="font-size:23px;font-weight:700;letter-spacing:1px">MOTIVAÇÃO</div></div>
+              <p class="lead" style="margin-top:16px;font-size:20px">Faltam ferramentas que organizem editais
+              extensos de forma adaptada ao TDAH. O FOCA nasce para transformar esse conteúdo em um plano
+              de estudos claro, com foco e constância.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col" style="flex:1">
+          <h2 class="cap" style="text-align:center">QUEM UTILIZARÁ?</h2>
+          <p class="lead" style="margin-top:14px">Concurseiros com <span class="bold">TDAH</span> que buscam
+          uma jornada de estudos mais <span class="bold">leve, organizada e inclusiva</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 OBJETIVO GERAL -->
+    <section class="slide" data-label="OBJETIVO GERAL">
+      <div class="row">
+        <div class="col" style="text-align:center">
+          <div class="winbox"><span class="ibub"><i>i</i></span>
+            <div class="bigtitle">OBJETIVO GERAL</div></div>
+        </div>
+        <div class="col">
+          <p class="lead" style="font-size:26px;text-align:center">Desenvolver um site que funcione como
+          assistente virtual de aprendizagem, oferecendo recursos adaptados a
+          <span class="bold">concurseiros com TDAH</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 OBJETIVOS ESPECÍFICOS (simplificado + alinhado) -->
+    <section class="slide" data-label="OBJETIVOS ESPECÍFICOS">
+      <div class="objtitle">
+        <div class="winbox" style="padding:10px 26px"><span class="ibub"><i>i</i></span>
+          <div class="bigtitle" style="font-size:32px">OBJETIVOS ESPECÍFICOS</div></div>
+      </div>
+      <div class="objlist">
+        <div class="obj"><div class="num">1</div><div>
+          <div class="ot">Mapear requisitos</div>
+          <div class="od">Entender as dificuldades e necessidades de quem tem TDAH.</div></div></div>
+        <div class="obj"><div class="num">2</div><div>
+          <div class="ot">Integrar Inteligência Artificial</div>
+          <div class="od">IA que extrai o conteúdo dos editais e oferece suporte simplificado.</div></div></div>
+        <div class="obj"><div class="num">3</div><div>
+          <div class="ot">Criar interface acessível</div>
+          <div class="od">Design baseado em IHC, com leitura fácil e alto contraste.</div></div></div>
+        <div class="obj"><div class="num">4</div><div>
+          <div class="ot">Aplicar gamificação</div>
+          <div class="od">Pontos por tempo de foco e fases para manter a constância.</div></div></div>
+        <div class="obj"><div class="num">5</div><div>
+          <div class="ot">Validar com usuários</div>
+          <div class="od">Testar com o público-alvo e medir a redução da sobrecarga cognitiva.</div></div></div>
+      </div>
+    </section>
+
+    <!-- 7 METODOLOGIAS -->
+    <section class="slide" data-label="METODOLOGIAS">
+      <div class="row">
+        <div class="col" style="text-align:center;flex:0 0 420px">
+          <div class="winbox"><span class="ibub"><i>i</i></span>
+            <div class="bigtitle">METODOLOGIAS</div></div>
+        </div>
+        <div class="col">
+          <div class="centerblock" style="text-align:left">
+            <p style="margin-bottom:14px"><span class="bold">Como foi feita a pesquisa:</span><br>Qualitativa e descritiva.</p>
+            <p style="margin-bottom:14px"><span class="bold">Técnicas e instrumentos:</span><br>Google Forms (perguntas abertas e fechadas).</p>
+            <p style="margin-bottom:14px"><span class="bold">Público-alvo:</span><br>50 pessoas com TDAH, entre concurseiros e estudantes.</p>
+            <p style="margin-bottom:14px"><span class="bold">Idade:</span> 18 a 50 anos.</p>
+            <p><span class="bold">Período de coleta:</span> Maio de 2026.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 ANÁLISE DOS DADOS - pizza -->
+    <section class="slide" data-label="ANÁLISE DOS DADOS">
+      <div class="row top">
+        <div class="col" style="flex:1.1">
+          <ul class="clean" style="margin-top:8px">
+            <li><span class="bold">Diagnóstico tardio:</span> a maioria tem entre 25 e 34 anos; mais de
+            <span class="bold">78%</span> só descobriram o TDAH na idade adulta.</li>
+            <li><span class="bold">Apoio médico:</span> <span class="bold">73%</span> dependem de medicação
+            (ex.: Ritalina/Venvanse) para conseguir estudar.</li>
+          </ul>
+        </div>
+        <div class="col" style="flex:1">
+          <h2 class="cap" style="text-align:center;margin-bottom:14px">PRINCIPAIS BARREIRAS</h2>
+          <div class="piewrap">
+            <div class="pie" aria-label="Gráfico das principais barreiras"></div>
+            <div class="legend">
+              <div class="li"><span class="sw" style="background:var(--blue)"></span>Inconstância — 80%</div>
+              <div class="li"><span class="sw" style="background:#5b78e8"></span>Procrastinação — 76%</div>
+              <div class="li"><span class="sw" style="background:#b9c4f2"></span>Desorganização — 43%</div>
+            </div>
+          </div>
+          <p style="text-align:center;font-size:15px;color:#555;margin-top:14px">
+            *Cada participante podia indicar mais de uma barreira.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 ANÁLISE DOS DADOS 2 -->
+    <section class="slide" data-label="ANÁLISE DOS DADOS">
+      <h2 class="cap" style="margin-bottom:14px">ESTRATÉGIAS QUE FUNCIONAM NA PRÁTICA</h2>
+      <ul class="clean">
+        <li><span class="bold">Estudo ativo:</span> responder questões e simulados é o método mais eficaz
+        (85% de preferência).</li>
+        <li><span class="bold">Estímulo visual:</span> mapas mentais e flashcards funcionam melhor do que
+        leituras longas de PDFs.</li>
+        <li><span class="bold">Tempo adaptado:</span> ciclos curtos de foco (Técnica Pomodoro) para evitar
+        a dispersão.</li>
+        <li><span class="bold">Fatores críticos:</span> noites de sono regulares (essenciais para o efeito
+        do remédio) e ambiente sem distrações/celular.</li>
+      </ul>
+    </section>
+
+    <!-- 10 O QUE O SISTEMA DEVE ATENDER (organizado) -->
+    <section class="slide" data-label="O QUE O SISTEMA DEVE ATENDER">
+      <div class="objtitle" style="margin-bottom:18px">
+        <div class="winbox" style="padding:9px 24px"><span class="ibub"><i>i</i></span>
+          <div class="bigtitle" style="font-size:30px">O QUE O SISTEMA DEVE ATENDER</div></div>
+      </div>
+      <div class="sysgrid">
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Cadastro e login de usuários</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Tira-dúvidas com IA</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Cadastro de editais</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Plataforma gamificada</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Cronograma de estudos personalizado</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Ofensiva motivacional</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Calendário e lembretes automáticos</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Sistema de tarefas adaptado às especificidades do aluno</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Privacidade de dados (anonimato, LGPD)</div></div>
+        <div class="sysitem"><div class="ck">✓</div><div class="st">Suporte interativo simplificado</div></div>
+      </div>
+    </section>
+
+    <!-- 11 REQUISITOS -->
+    <section class="slide" data-label="REQUISITOS">
+      <div class="cols3">
+        <div class="cbox">
+          <div class="chead">REQUISITOS FUNCIONAIS</div>
+          <ul class="clean">
+            <li>Login de usuário</li>
+            <li>Resumo de editais</li>
+            <li>Notificações</li>
+            <li>Histórico de atividades</li>
+            <li>Configuração de usuário conforme o perfil e a especificidade</li>
+          </ul>
+        </div>
+        <div class="cbox">
+          <div class="chead">REQUISITOS NÃO FUNCIONAIS</div>
+          <ul class="clean">
+            <li>Velocidade de resposta</li>
+            <li>Disponibilidade</li>
+            <li>Segurança</li>
+            <li>Usabilidade</li>
+            <li>Escalabilidade</li>
+          </ul>
+        </div>
+        <div class="cbox">
+          <div class="chead">REGRAS DE NEGÓCIO</div>
+          <ul class="clean">
+            <li>Cadastro de usuário</li>
+            <li>Senha com no mínimo 8 caracteres</li>
+            <li>Cadastro de e-mail</li>
+            <li>Cancelamento de conta</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 FERRAMENTAS -->
+    <section class="slide" data-label="FERRAMENTAS UTILIZADAS">
+      <div class="objtitle" style="margin-bottom:22px">
+        <div class="winbox" style="padding:9px 24px"><span class="ibub"><i>i</i></span>
+          <div class="bigtitle" style="font-size:30px">FERRAMENTAS UTILIZADAS</div></div>
+      </div>
+      <div class="tools">
+        <div class="tool"><div class="logo"><img src="img/logo_python.png" alt="Python"></div>
+          <div class="tx"><div class="tn">PYTHON</div><div class="td">Linguagem de programação e lógica da solução.</div></div></div>
+        <div class="tool"><div class="logo"><img src="img/logo_googleforms.png" alt="Google Forms"></div>
+          <div class="tx"><div class="tn">GOOGLE FORMS</div><div class="td">Coleta de dados da pesquisa.</div></div></div>
+        <div class="tool"><div class="logo"><img src="img/logo_lovable.png" alt="Lovable"></div>
+          <div class="tx"><div class="tn">LOVABLE</div><div class="td">Criação do site e protótipo com IA.</div></div></div>
+        <div class="tool"><div class="logo"><img src="img/logo_github.png" alt="GitHub"></div>
+          <div class="tx"><div class="tn">GITHUB</div><div class="td">Versionamento e colaboração.</div></div></div>
+      </div>
+    </section>
+
+    <!-- 13 EM DESENVOLVIMENTO -->
+    <section class="slide" data-label="PRÉVIA DO SITE">
+      <div class="centerall">
+        <p class="devmsg">Este site se encontra em desenvolvimento.<br>
+        Em breve será apresentado de forma completa.</p>
+      </div>
+    </section>
+
+    <!-- 14 REFERÊNCIAS (ABNT) -->
+    <section class="slide" data-label="REFERÊNCIAS">
+      <h2 class="cap" style="margin-bottom:16px">REFERÊNCIAS</h2>
+      <div class="refs">
+        <div class="ref">ASSOCIAÇÃO BRASILEIRA DO DÉFICIT DE ATENÇÃO (ABDA). <span class="t">O que é o TDAH</span>.
+        [<i>S. l.</i>], [<i>s. d.</i>]. Disponível em: https://tdah.org.br. Acesso em: 24 jun. 2026.</div>
+        <div class="ref">GUIA HORCEL. <span class="t">16 recomendações para TDAH, dislexia e transtornos de aprendizagem</span>.
+        [<i>S. l.</i>], [<i>s. d.</i>]. Disponível em: https://horcel.wiki.br. Acesso em: 24 jun. 2026.</div>
+        <div class="ref">IUBENDA. <span class="t">Como escolher fontes adequadas para usuários com TDAH</span>.
+        Centro de Ajuda Iubenda, [<i>s. d.</i>]. Disponível em: https://www.iubenda.com. Acesso em: 24 jun. 2026.</div>
+        <div class="ref">WORLD WIDE WEB CONSORTIUM (W3C). <span class="t">Web Content Accessibility Guidelines (WCAG) 2.1</span>.
+        [<i>S. l.</i>], 2018. Disponível em: https://www.w3.org/TR/WCAG21/. Acesso em: 24 jun. 2026.</div>
+      </div>
+    </section>
+
+    <!-- 15 OBRIGADA -->
+    <section class="slide" data-label="OBRIGADA">
+      <div class="centerall" style="flex-direction:column;gap:18px">
+        <img src="img/mascote_foca.png" alt="Mascote FOCA" style="max-height:230px">
+        <div class="thanks">OBRIGADA!</div>
+        <div style="font-size:20px;font-weight:600;letter-spacing:1px">GRUPO FOCA · SENAC PALHOÇA</div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+
+  <div class="footer">
+    <div class="footstrip">
+      <span>SENAC PALHOÇA</span>
+      <span class="ctr" id="counter">1 / 15</span>
+      <span>GRUPO FOCA</span>
+    </div>
+    <div class="scrollbar">
+      <div class="arrow" id="prev">◄</div>
+      <div class="track"><div class="thumb" id="thumb"></div></div>
+      <div class="arrow" id="next">►</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  function fit(){
+    var s=Math.min(window.innerWidth/1280, window.innerHeight/720);
+    stage.style.transform='translate(-50%,-50%) scale('+s+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length, idx=0;
+  var thumb=document.getElementById('thumb'),
+      counter=document.getElementById('counter'),
+      lblL=document.getElementById('lblL'),
+      lblR=document.getElementById('lblR'),
+      THUMB=8; // % largura
+  function show(i){
+    idx=(i+total)%total;
+    slides.forEach(function(s,k){s.classList.toggle('active',k===idx);});
+    thumb.style.left=(idx/(total-1))*(100-THUMB)+'%';
+    counter.textContent=(idx+1)+' / '+total;
+    var s=slides[idx];
+    lblL.textContent=s.getAttribute('data-label')||'';
+    lblR.textContent=s.getAttribute('data-labelr')||'';
+  }
+  document.getElementById('prev').onclick=function(){show(idx-1);};
+  document.getElementById('next').onclick=function(){show(idx+1);};
+  document.addEventListener('keydown',function(e){
+    if(['ArrowRight','PageDown',' '].indexOf(e.key)>=0){show(idx+1);e.preventDefault();}
+    else if(['ArrowLeft','PageUp'].indexOf(e.key)>=0){show(idx-1);e.preventDefault();}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(total-1);}
+    else if(e.key==='f'||e.key==='F'){toggleFs();}
+  });
+  function toggleFs(){
+    if(!document.fullscreenElement){ (document.documentElement.requestFullscreen||function(){})(); }
+    else { document.exitFullscreen(); }
+  }
+  document.getElementById('fsbtn').onclick=toggleFs;
+  var start=parseInt((location.search.match(/[?&]s=(\d+)/)||[])[1]||'1',10);
+  show((isNaN(start)?1:start)-1);
+})();
+</script>
+</body>
+</html>
