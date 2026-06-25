@@ -211,7 +211,7 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
     <section class="slide" data-label="EQUIPE">
       <div class="teamtitle">
         <div class="winbox"><span class="ibub"><i>i</i></span>
-          <div class="bigtitle">QUEM SÃO OS RESPONSÁVEIS PELO FOCA?</div></div>
+          <div class="bigtitle">QUEM SÃO AS RESPONSÁVEIS PELO FOCA?</div></div>
       </div>
       <div class="team">
         <div class="member"><div class="ph"><img src="img/foto_rafaella.jpg" alt="Rafaella Ramos"></div>
@@ -328,7 +328,7 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
           <ul class="clean" style="font-size:24px">
             <li style="margin-bottom:16px"><span class="bold">Tipo de pesquisa:</span> qualitativa e descritiva.</li>
             <li style="margin-bottom:16px"><span class="bold">Técnicas e instrumentos:</span> Google Forms (perguntas abertas e fechadas).</li>
-            <li style="margin-bottom:16px"><span class="bold">Público-alvo:</span> 50 pessoas com TDAH, entre concurseiros e estudantes.</li>
+            <li style="margin-bottom:16px"><span class="bold">Público-alvo:</span> 50 pessoas concurseiras com TDAH (com laudo ou em investigação).</li>
             <li style="margin-bottom:16px"><span class="bold">Idade:</span> 18 a 50 anos.</li>
             <li><span class="bold">Período de coleta:</span> maio de 2026.</li>
           </ul>
@@ -481,7 +481,7 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
     <!-- 15 OBRIGADA -->
     <section class="slide" data-label="OBRIGADA">
       <div class="centerall" style="flex-direction:column;gap:18px">
-        <img src="img/mascote_palmas.gif?v=5" alt="Foca sorrindo batendo palmas comemorando" style="max-height:270px">
+        <img id="sealgif" src="img/mascote_palmas.gif?v=5" alt="Foca sorrindo batendo palmas comemorando" title="Clique para ouvir a foca 🔊" style="max-height:270px;cursor:pointer">
         <div class="thanks">OBRIGADA!</div>
         <div style="font-size:20px;font-weight:600;letter-spacing:1px">GRUPO FOCA · SENAC PALHOÇA</div>
       </div>
@@ -512,6 +512,16 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
   }
   window.addEventListener('resize',fit); fit();
 
+  /* ===== Som de foca (áudio real do vídeo, 1.5x, offline) ===== */
+  var sealAudio=new Audio('audio/foca.mp3');
+  sealAudio.preload='auto';
+  function playSeal(){
+    try{ sealAudio.pause(); sealAudio.currentTime=0; sealAudio.play().catch(function(){}); }catch(e){}
+  }
+  function stopSeal(){ try{ sealAudio.pause(); sealAudio.currentTime=0; }catch(e){} }
+  var sealgif=document.getElementById('sealgif');
+  if(sealgif){ sealgif.addEventListener('click',playSeal); }
+
   var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var total=slides.length, idx=0;
   var thumb=document.getElementById('thumb'),
@@ -527,7 +537,10 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
     var s=slides[idx];
     lblL.textContent=s.getAttribute('data-label')||'';
     lblR.textContent=s.getAttribute('data-labelr')||'';
+    if(idx===total-1){ if(inited){ playSeal(); } } // som da foca ao chegar no OBRIGADA
+    else { stopSeal(); }
   }
+  var inited=false;
   document.getElementById('prev').onclick=function(){show(idx-1);};
   document.getElementById('next').onclick=function(){show(idx+1);};
   document.addEventListener('keydown',function(e){
@@ -544,6 +557,7 @@ ul.clean li:before{content:"▪";position:absolute;left:0;color:var(--blue);font
   document.getElementById('fsbtn').onclick=toggleFs;
   var start=parseInt((location.search.match(/[?&]s=(\d+)/)||[])[1]||'1',10);
   show((isNaN(start)?1:start)-1);
+  inited=true; // a partir daqui, navegar até o slide final dispara o som
 })();
 </script>
 </body>
