@@ -30,16 +30,8 @@
   --sombra:0 8px 28px rgba(62,28,219,.08);
   --fonte:'Founders Grotesk Condensed','Archivo Narrow','Roboto Condensed','Arial Narrow',system-ui,sans-serif;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --fundo:#0E0B24; --superficie:#181439; --superficie-2:#1F1A48; --tinta:#1B2050;
-    --texto:#EEF0FF; --texto-2:#C5C4E0; --mudo:#9E9DBF; --borda:#2E2A60; --borda-forte:#4A4590;
-    --botao:#516DFB; --botao-texto:#FFFFFF; --link:#8FB8FF; --azul-palido:#1B2050; --logo:#A1E4FF;
-    --ok:#5CD39A; --ok-fundo:#123526; --alerta:#F7B267; --alerta-fundo:#3D2A10;
-    --sombra:0 8px 28px rgba(0,0,0,.35);
-  }
-}
+/* Tema claro fixo: o app NÃO segue mais o modo escuro do sistema (pedido de 29/09).
+   O tema escuro só entra se alguém colocar data-theme="dark" no <html>, o que o app não faz. */
 :root[data-theme="dark"]{
   color-scheme:dark;
   --fundo:#0E0B24; --superficie:#181439; --superficie-2:#1F1A48; --tinta:#1B2050;
@@ -150,8 +142,41 @@ a{color:var(--link)}
 .item .meta{display:flex;gap:.5rem;align-items:center;font-size:.8rem;color:var(--mudo);margin-top:.2em;flex-wrap:wrap}
 .conteudo{padding:1.4rem 16px 4rem;max-width:1080px;width:100%}
 .abas{display:flex;gap:.3rem;flex-wrap:wrap;border-bottom:1px solid var(--borda);margin:1rem 0 1.4rem}
-.abas button{background:transparent;color:var(--mudo);border-radius:12px 12px 0 0;box-shadow:none;min-height:46px;padding:.5em 1em;font-size:1rem;border-bottom:3px solid transparent}
-.abas button.sel{color:var(--azul);border-bottom-color:var(--azul)}
+.abas button{background:transparent;color:var(--mudo);border-radius:12px 12px 0 0;box-shadow:none;min-height:46px;padding:.5em 1em;font-size:1rem;border-bottom:3px solid transparent;transition:background .15s,color .15s}
+.abas button:hover:not(.sel){color:var(--azul);background:var(--tinta)}
+.abas button.sel{color:#fff;background:var(--azul);border-bottom-color:var(--azul)}
+.abas button.sel:hover{color:#fff;background:var(--azul)}
+/* aba Percentual */
+.pct-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.4rem}
+.pct-card{background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:1.1rem 1.3rem;display:flex;flex-direction:column;gap:.5rem}
+.pct-card.sel{border-color:var(--azul-medio);box-shadow:0 0 0 2px var(--azul-medio) inset}
+.pct-card .nome{font-weight:600;font-size:1.1rem}
+.pct-card .num{font-size:2.8rem;font-weight:700;line-height:1;color:var(--azul);font-variant-numeric:tabular-nums}
+.pct-card .num small{font-size:1rem;font-weight:500;color:var(--mudo);margin-left:.3em}
+.barra{height:10px;background:var(--borda);border-radius:999px;overflow:hidden}
+.barra > i{display:block;height:100%;background:var(--azul);border-radius:999px}
+.barra.mini{height:8px;width:100%;min-width:60px}
+.barra > i.baixa{background:var(--alerta)}
+.barra > i.media{background:var(--azul-claro)}
+.pct-lista{margin:.3em 0 0;padding-left:1.1em;font-size:.95rem;color:var(--texto-2)}
+.pct-lista li{margin:.15em 0}
+.pct-explica{background:var(--tinta);border-radius:16px;padding:1rem 1.2rem;font-size:.95rem;color:var(--texto-2);margin-top:1.2rem}
+table.pct-tab td .barra{margin-top:.3em}
+table.pct-tab td.tabular{white-space:nowrap}
+/* aba Atenção */
+.at-cand{background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:1.1rem 1.3rem;margin-bottom:1.2rem}
+.at-cand.sel{border-color:var(--azul-medio)}
+.at-cand h2{font-size:1.3rem;margin:0 0 .6rem}
+.at-grupo{border-top:1px solid var(--borda);padding:.8rem 0}
+.at-grupo h3{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mudo);margin:0 0 .4rem;font-weight:600}
+.at-grupo ul{margin:0;padding-left:1.2em}
+.at-grupo li{margin:.25em 0;color:var(--texto-2)}
+.at-grupo li .chip{font-size:.7rem;margin-left:.4em;vertical-align:middle}
+.at-comum{background:var(--tinta);border-radius:18px;padding:1.1rem 1.3rem;margin-bottom:1.2rem}
+.at-edit summary{cursor:pointer;color:var(--azul);font-weight:600;font-size:.95rem;margin-top:.6rem}
+.at-edit .pilha{margin-top:.8rem}
+.at-edit textarea{min-height:90px;font-size:.95rem}
+@media (max-width:640px){.pct-card .num{font-size:2.2rem}.abas button{font-size:.92rem;padding:.4em .7em}}
 .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
 .dado{background:var(--superficie);border-radius:16px;padding:.9rem 1.1rem;border:1px solid var(--borda)}
 .dado .rotulo{margin-bottom:.15em}
@@ -168,6 +193,35 @@ th{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mud
 .resp-item .txt{white-space:pre-wrap;background:var(--superficie-2);border-radius:12px;padding:.8em 1em;margin-top:.3em;font-size:1.05rem}
 .resp-item .txt.vazio{color:var(--mudo);font-style:italic}
 .resp-item .tempo{font-size:.85rem;color:var(--mudo);margin-top:.3em}
+/* aba Respostas — contexto, pergunta, resposta, avaliação */
+.seg{display:inline-flex;border:2px solid var(--borda-forte);border-radius:999px;overflow:hidden;background:var(--superficie)}
+.seg button{background:transparent;color:var(--texto-2);box-shadow:none;border-radius:0;min-height:42px;padding:.3em 1.1em;font-size:.95rem}
+.seg button.sel{background:var(--azul);color:#fff}
+.seg button + button{border-left:1px solid var(--borda)}
+.resp-topo{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.resp-num{display:inline-flex;align-items:center;justify-content:center;min-width:2.2em;height:2.2em;border-radius:999px;background:var(--azul);color:#fff;font-weight:700;font-size:1rem}
+details.resp-ctx{border:1px solid var(--borda);border-radius:14px;background:var(--superficie-2);padding:.7em 1.1em;font-size:1.02rem;line-height:1.4}
+details.resp-ctx summary{color:var(--azul)}
+details.resp-ctx .rotulo{margin:.9em 0 .3em}
+details.resp-ctx p{margin:0;font-size:1.02rem}
+details.resp-ctx .bloco p + p{margin-top:.4em}
+details.resp-ctx ul{margin:.3em 0 0;padding-left:1.3em;font-size:1.02rem}
+details.resp-ctx .cita{border-left:4px solid var(--magenta);padding:.4em 1em;font-style:italic;background:var(--superficie);border-radius:0 12px 12px 0}
+details.resp-ctx .papel{font-weight:600;color:var(--azul);margin-top:.6em}
+.resp-item{border-top:1px solid var(--borda);padding-top:.9rem}
+.resp-item .tipo{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mudo)}
+.resp-item .tipo.aprof{color:var(--magenta)}
+.resp-item .perg{font-weight:700;font-size:1.15rem;line-height:1.25;margin-top:.15em}
+.resp-item .campo{font-size:.85rem;color:var(--mudo);margin-top:.5em;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.resp-item .difere{font-size:.85rem;color:var(--alerta);margin-top:.3em}
+.resp-cand{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-top:.7em}
+.resp-cand b{font-size:1rem}
+.resp-aval{border:1px solid var(--borda);border-radius:14px;padding:.9rem 1rem;background:var(--superficie);display:flex;flex-direction:column;gap:.8rem}
+.resp-aval > .rotulo{color:var(--magenta);margin:0}
+.resp-aval textarea{min-height:120px;font-size:1.05rem}
+.resp-aval .obs-lida{white-space:pre-wrap;background:var(--superficie-2);border-radius:12px;padding:.7em 1em;font-size:1rem}
+.resp-aval .obs-lida.vazio{color:var(--mudo);font-style:italic}
+.resp-aviso{background:var(--alerta-fundo);color:var(--alerta);border-radius:14px;padding:.8rem 1.1rem;font-size:.95rem;margin-bottom:1rem}
 details{border:1px dashed var(--magenta);border-radius:14px;padding:.6em 1em}
 details summary{cursor:pointer;font-weight:600;color:var(--magenta);text-transform:uppercase;letter-spacing:.06em;font-size:.85rem}
 details ul{margin:.5em 0 0;padding-left:1.3em;font-size:1rem}
@@ -198,6 +252,9 @@ details p{margin-top:.5em;font-size:1rem}
 .rel-ident{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem}
 .rel-ident b{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mudo)}
 .rel-cen{margin-top:1.2rem;page-break-inside:avoid}
+.rel-cen ul.at-lista{margin:.3em 0 0;padding-left:1.2em}
+.rel-cen ul.at-lista li{margin:.2em 0}
+.barra,.barra > i,.chip,.abas button.sel{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .rel-cen h3{font-size:1.05rem;text-transform:uppercase;margin-bottom:.4em}
 .rel-cen .q{font-weight:600;margin-top:.6em}
 .rel-cen .a{white-space:pre-wrap;border-left:3px solid var(--borda-forte);padding:.2em .8em;margin-top:.2em}
@@ -573,7 +630,19 @@ function garantirResposta(cid, cen, passo){
 function textoPergunta(p){ return p.enunciado + (p.pergunta2 ? " " + p.pergunta2 : "") + (p.campo ? " — " + p.campo : ""); }
 function avaliacao(cid, comp){ let a = db.avaliacoes.find(x=>x.candidato_id===cid && x.competencia===comp); if(!a){ a={candidato_id:cid, competencia:comp, observacao:"", nota:null}; db.avaliacoes.push(a);} return a; }
 function observacao(cid, cenId){ let o = db.observacoes.find(x=>x.candidato_id===cid && x.cenario_id===cenId); if(!o){ o={candidato_id:cid, cenario_id:cenId, texto:""}; db.observacoes.push(o);} return o; }
-function parecer(cid){ let p = db.pareceres.find(x=>x.candidato_id===cid); if(!p){ p={candidato_id:cid, evidencias:"", positivos:"", atencao:"", sintese:""}; db.pareceres.push(p);} return p; }
+const ITENS_ATENCAO = [["pontos","Pontos de atenção identificados nas respostas"],["aprofundar","Competências que precisam ser aprofundadas"],["lacunas","Possíveis lacunas em relação à vaga"],["esclarecer","Respostas que merecem esclarecimento na próxima etapa"],["validar","Comportamentos ou situações que devem ser validados"],["insuficiente","Informações que não foram suficientes para concluir"],["perguntas","Perguntas ou verificações adicionais recomendadas"]];
+function parecer(cid){ let p = db.pareceres.find(x=>x.candidato_id===cid); if(!p){ p={candidato_id:cid, evidencias:"", positivos:"", atencao:"", sintese:""}; db.pareceres.push(p);} if(!p.itens) p.itens={}; ITENS_ATENCAO.forEach(([k])=>{ if(typeof p.itens[k]!=="string") p.itens[k]=""; }); return p; }
+/* Aderência: soma das notas (1–5) das competências avaliadas ÷ máximo possível (n × 5). Só usa o que foi avaliado. */
+function aderencia(cid){
+  const avs = COMPETENCIAS.map(k=>db.avaliacoes.find(a=>a.candidato_id===cid&&a.competencia===k)).filter(a=>a&&a.nota);
+  const soma = avs.reduce((s,a)=>s+a.nota,0), max = avs.length*5;
+  return { n:avs.length, soma, max, pct: avs.length ? Math.round(soma/max*1000)/10 : null, avs,
+           positivos: avs.filter(a=>a.nota>=4), reduzem: avs.filter(a=>a.nota<=3) };
+}
+function faixaPct(p){ if(p==null) return ["sem notas","neutro"]; if(p>=80) return ["Alta aderência","ok"]; if(p>=60) return ["Boa aderência","interno"]; if(p>=40) return ["Aderência parcial","alerta"]; return ["Baixa aderência","alerta"]; }
+function classeBarra(p){ return p>=80?"":(p>=60?"media":"baixa"); }
+function linhasItens(txt){ return String(txt||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean); }
+function liItem(s){ const nv=/necessita valida[çc][ãa]o/i.test(s); return '<li>'+esc(nv? s.replace(/\s*[\(\[]?\s*necessita valida[çc][ãa]o\s*[\)\]]?\s*\.?$/i,"") : s)+(nv?'<span class="chip alerta">necessita validação</span>':'')+'</li>'; }
 function tempoCenario(c, cen){
   const t = (c.tempos||{})[cen.id]; if(!t || !t.aberto_em) return null;
   const fim = t.concluido_em ? new Date(t.concluido_em) : (c.status==="em_andamento" && CENARIOS[c.cenario_idx]?.id===cen.id ? new Date() : null);
@@ -584,6 +653,7 @@ function chipStatus(s){ const [t,k]=STATUS[s]||[s,"neutro"]; return '<span class
 
 /* ===================== NAVEGAÇÃO ===================== */
 let painelAberto = false, painelSel = null, painelAba = "acompanhar", ticker = null;
+let respVisao = "candidato"; // aba Respostas: "candidato" (individual) ou "historico" (todos os candidatos)
 function mostrar(id){ document.querySelectorAll(".tela").forEach(t=>t.classList.toggle("ativa", t.id===id)); window.scrollTo(0,0); }
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove("on"),2200); }
 
@@ -738,7 +808,8 @@ function pacote(cids){
   const ids = new Set(cids);
   return { app:"olux-avaliacao-coord-implantacao", versao:1, exportado_em:agora(),
     candidatos: db.candidatos.filter(c=>ids.has(c.id)), respostas: db.respostas.filter(r=>ids.has(r.candidato_id)),
-    avaliacoes: db.avaliacoes.filter(a=>ids.has(a.candidato_id)), observacoes: db.observacoes.filter(o=>ids.has(o.candidato_id)), pareceres: db.pareceres.filter(p=>ids.has(p.candidato_id)) };
+    avaliacoes: db.avaliacoes.filter(a=>ids.has(a.candidato_id)), observacoes: db.observacoes.filter(o=>ids.has(o.candidato_id)), pareceres: db.pareceres.filter(p=>ids.has(p.candidato_id)),
+    atencao_comum: db.atencao_comum||"" };
 }
 async function salvarArquivo(nome, dados){
   if(PODE_IMPRIMIR){
@@ -775,6 +846,7 @@ function importarPacote(d){
   db.avaliacoes = db.avaliacoes.filter(a=>!ids.has(a.candidato_id)).concat(d.avaliacoes||[]);
   db.observacoes = db.observacoes.filter(o=>!ids.has(o.candidato_id)).concat(d.observacoes||[]);
   db.pareceres = db.pareceres.filter(p=>!ids.has(p.candidato_id)).concat(d.pareceres||[]);
+  if(typeof d.atencao_comum==="string" && d.atencao_comum.trim()) db.atencao_comum = d.atencao_comum;
   salvar(true);
 }
 
@@ -786,7 +858,7 @@ function renderPainel(){
   const c = candidato(painelSel);
   const cont = $("painel-conteudo");
   if(!c){ cont.innerHTML = '<h1>Painel do entrevistador</h1><p class="mudo" style="margin-top:.6rem">Selecione um candidato à esquerda ou cadastre um novo. Vaga: '+esc(VAGA)+'.</p>'; return; }
-  const abas = [["acompanhar","Acompanhar"],["respostas","Respostas"],["competencias","Competências"],["parecer","Parecer"]];
+  const abas = [["acompanhar","Acompanhar"],["respostas","Respostas"],["competencias","Competências"],["parecer","Parecer"],["percentual","Percentual"],["atencao","Atenção"]];
   let html = '<div class="linha"><div><h1 style="font-size:2rem">'+esc(c.nome)+'</h1><p class="mudo">'+esc(c.vaga)+' · '+dataBR(c.data)+' · Entrevistador: '+esc(c.entrevistador)+' · ID <span class="tabular">'+esc(c.id)+'</span></p></div><span class="espaco"></span>'+chipStatus(c.status)+'</div>';
   html += '<div class="abas">'+abas.map(a=>'<button data-aba="'+a[0]+'" class="'+(painelAba===a[0]?'sel':'')+'">'+a[1]+'</button>').join('')+'<span class="espaco"></span><button data-aba="relatorio" class="pequeno" style="margin-bottom:.3rem">GERAR RELATÓRIO</button></div>';
   html += '<div id="aba-corpo"></div>';
@@ -796,6 +868,8 @@ function renderPainel(){
   if(painelAba==="acompanhar") renderAcompanhar(c, corpo);
   else if(painelAba==="respostas") renderRespostas(c, corpo);
   else if(painelAba==="competencias") renderCompetencias(c, corpo);
+  else if(painelAba==="percentual") renderPercentual(c, corpo);
+  else if(painelAba==="atencao") renderAtencao(c, corpo);
   else renderParecer(c, corpo);
 }
 
@@ -832,26 +906,77 @@ function renderAcompanhar(c, el){
     $("ac-nao").onclick=()=>$("ac-confirma").innerHTML=""; $("ac-sim").onclick=()=>{ const id=c.id; db.candidatos=db.candidatos.filter(x=>x.id!==id); db.respostas=db.respostas.filter(x=>x.candidato_id!==id); db.avaliacoes=db.avaliacoes.filter(x=>x.candidato_id!==id); db.observacoes=db.observacoes.filter(x=>x.candidato_id!==id); db.pareceres=db.pareceres.filter(x=>x.candidato_id!==id); if(db.sessao.candidato_id===id) db.sessao.candidato_id=null; painelSel=null; salvar(true); renderPainel(); toast("Candidato excluído."); }; };
 }
 
+/* ===================== ABA RESPOSTAS (contexto → pergunta → resposta → avaliação) =====================
+   Lê direto de db.respostas / db.observacoes; nada é copiado. O contexto e a pergunta saem do mesmo
+   array CENARIOS que a tela do candidato usa (renderBlocos), então aparecem exatamente como foram apresentados. */
+function contextoHtml(cen){
+  let h = '<details class="resp-ctx" open><summary>Contexto apresentado ao candidato</summary>';
+  h += '<div class="rotulo">Contexto</div>'+renderBlocos(cen.contexto);
+  if(cen.informacoes.length) h += '<div class="rotulo">Informações disponíveis</div>'+renderBlocos(cen.informacoes);
+  if(cen.papel) h += '<p class="papel">'+esc(cen.papel)+'</p>';
+  return h + '</details>';
+}
+function respostaHtml(r){
+  let h = r && r.resposta && r.resposta.trim() ? '<div class="txt">'+esc(r.resposta)+'</div>' : '<div class="txt vazio">Sem resposta registrada.</div>';
+  if(r) h += '<div class="tempo tabular">Aberta às '+horaSeg(r.aberto_em)+(r.enviado_em?' · enviada às '+horaSeg(r.enviado_em)+' · '+duracao((new Date(r.enviado_em)-new Date(r.aberto_em))/1000):' · ainda não enviada')+'</div>';
+  return h;
+}
+function respostasOrfas(cids){
+  const ids = new Set(cids);
+  return db.respostas.filter(r=> ids.has(r.candidato_id) && !CENARIOS.some(cen=> cen.id===r.cenario_id && cen.passos.some(p=>p.id===r.pergunta_id)));
+}
+function criteriosHtml(cen){
+  let h = '';
+  if(cen.reservado) h += '<details open><summary>'+esc(cen.reservado.titulo)+'</summary><ul>'+cen.reservado.itens.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul></details>';
+  if(cen.observar) h += '<details><summary>Critérios de avaliação — o que observar</summary><p>'+esc(cen.observar.intro)+'</p><ul>'+cen.observar.itens.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>'+(cen.observar.fecho?'<p>'+esc(cen.observar.fecho)+'</p>':'')+'</details>';
+  return h;
+}
 function renderRespostas(c, el){
-  let html = '<p class="mudo pequeno-texto" style="margin-bottom:1rem">Os títulos dos cenários, os tempos, as orientações "o que observar" e as informações reservadas aparecem só aqui. O candidato vê apenas "Cenário N".</p><div class="pilha">';
-  CENARIOS.forEach(cen=>{
-    const t = tempoCenario(c,cen);
-    html += '<div class="bloco-resp"><header><h3>'+esc(cen.rotulo)+'</h3><span class="mudo">'+esc(cen.titulo)+'</span><span class="espaco"></span><span class="chip neutro tabular">'+(t!=null?duracao(t):'não iniciado')+'</span></header><div class="corpo">';
-    if(cen.reservado) html += '<details open><summary>'+esc(cen.reservado.titulo)+'</summary><ul>'+cen.reservado.itens.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul></details>';
-    if(cen.observar) html += '<details><summary>O que observar</summary><p>'+esc(cen.observar.intro)+'</p><ul>'+cen.observar.itens.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>'+(cen.observar.fecho?'<p>'+esc(cen.observar.fecho)+'</p>':'')+'</details>';
-    cen.passos.filter(p=>p.tipo!=="entrevistador").forEach(p=>{
-      const r = resposta(c.id, cen.id, p.id);
-      html += '<div class="resp-item"><div class="perg">'+esc(p.enunciado)+(p.pergunta2?' '+esc(p.pergunta2):'')+(p.campo?' <span class="mudo">('+esc(p.campo)+')</span>':'')+'</div>';
-      html += r && r.resposta ? '<div class="txt">'+esc(r.resposta)+'</div>' : '<div class="txt vazio">Sem resposta.</div>';
-      if(r) html += '<div class="tempo tabular">Aberta às '+horaSeg(r.aberto_em)+(r.enviado_em?' · enviada às '+horaSeg(r.enviado_em)+' · '+duracao((new Date(r.enviado_em)-new Date(r.aberto_em))/1000):' · ainda não enviada')+'</div>';
+  const historico = respVisao==="historico";
+  const cands = historico ? candidatosOrdenados() : [c];
+  let html = '<div class="resp-topo"><div class="seg"><button data-visao="candidato" class="'+(historico?'':'sel')+'">Este candidato</button><button data-visao="historico" class="'+(historico?'sel':'')+'">Histórico (todos os candidatos)</button></div>';
+  html += '<span class="mudo pequeno-texto">'+(historico ? cands.length+' candidato(s) registrado(s) neste aparelho, em ordem de cadastro.' : 'Contexto e perguntas exatamente como apresentados no tablet; títulos, tempos, critérios e informações reservadas aparecem só aqui.')+'</span></div>';
+  const orfas = respostasOrfas(cands.map(x=>x.id));
+  if(orfas.length) html += '<div class="resp-aviso">'+orfas.length+' resposta(s) registrada(s) não correspondem a nenhuma pergunta atual do roteiro e por isso não aparecem abaixo. Elas continuam no arquivo exportado (JSON).</div>';
+  html += '<div class="pilha">';
+  CENARIOS.forEach((cen, ci)=>{
+    const perguntas = cen.passos.filter(p=>p.tipo!=="entrevistador");
+    html += '<div class="bloco-resp"><header><span class="resp-num">'+(ci+1)+'</span><h3>'+esc(cen.rotulo)+'</h3><span class="mudo">'+esc(cen.titulo)+'</span><span class="espaco"></span>';
+    if(!historico){
+      const t = tempoCenario(c,cen);
+      const env = perguntas.filter(p=>{ const r=resposta(c.id,cen.id,p.id); return r&&r.enviado_em; }).length;
+      html += '<span class="chip '+(env===perguntas.length?'ok':(env?'alerta':'neutro'))+' tabular">'+env+' de '+perguntas.length+' respondida(s)</span><span class="chip neutro tabular">'+(t!=null?duracao(t):'não iniciado')+'</span>';
+    }
+    html += '</header><div class="corpo">';
+    html += contextoHtml(cen);
+    perguntas.forEach(p=>{
+      html += '<div class="resp-item"><div class="tipo'+(p.tipo==="aprofundamento"?' aprof':'')+'">'+(p.tipo==="aprofundamento"?'Pergunta de aprofundamento':'Pergunta principal')+'</div>';
+      html += '<p class="perg">'+esc(p.enunciado)+(p.pergunta2?'<br>'+esc(p.pergunta2):'')+'</p>';
+      html += '<div class="campo">'+esc(p.campo||"Sua resposta")+'</div>';
+      cands.forEach(x=>{
+        const r = resposta(x.id, cen.id, p.id);
+        if(historico) html += '<div class="resp-cand"><b>'+esc(x.nome)+'</b><span class="mudo pequeno-texto">'+dataBR(x.data)+'</span>'+chipStatus(x.status)+'</div>';
+        html += respostaHtml(r);
+        if(r && r.pergunta && r.pergunta!==textoPergunta(p)) html += '<div class="difere">Texto da pergunta registrado no momento da resposta: “'+esc(r.pergunta)+'”</div>';
+      });
       html += '</div>';
     });
-    const o = observacao(c.id, cen.id);
-    html += '<div class="interno"><label><span class="rotulo" style="color:var(--magenta)">Observações do entrevistador (internas)</span><textarea data-obs="'+cen.id+'" placeholder="Evidências, comportamento, o que chamou atenção…">'+esc(o.texto)+'</textarea></label></div>';
-    html += '</div></div>';
+    html += '<div class="resp-aval"><div class="rotulo">Avaliação do entrevistador — '+esc(cen.rotulo)+'</div>'+criteriosHtml(cen);
+    if(historico){
+      cands.forEach(x=>{
+        const o = db.observacoes.find(v=>v.candidato_id===x.id && v.cenario_id===cen.id); const txt = o && o.texto.trim();
+        html += '<div><div class="resp-cand" style="margin-top:0"><b>'+esc(x.nome)+'</b><span class="mudo pequeno-texto">observações do entrevistador</span></div>'+(txt?'<div class="obs-lida">'+esc(o.texto)+'</div>':'<div class="obs-lida vazio">Sem observação registrada.</div>')+'</div>';
+      });
+      html += '<p class="mudo pequeno-texto">Para editar as observações, use a visão “Este candidato”.</p>';
+    } else {
+      const o = observacao(c.id, cen.id);
+      html += '<label><span class="rotulo">Observações do entrevistador (internas)</span><textarea data-obs="'+cen.id+'" placeholder="Evidências, comportamento, o que chamou atenção…">'+esc(o.texto)+'</textarea></label>';
+    }
+    html += '</div></div></div>';
   });
   html += '</div>';
   el.innerHTML = html;
+  el.querySelectorAll(".seg button").forEach(b=> b.onclick=()=>{ respVisao=b.dataset.visao; renderPainel(); });
   el.querySelectorAll("textarea[data-obs]").forEach(ta=> ta.addEventListener("input", ()=>{ observacao(c.id, ta.dataset.obs).texto = ta.value; salvar(); }));
 }
 
@@ -871,6 +996,58 @@ function renderParecer(c, el){
   const campo=(k,rot,ph)=>'<label><span class="rotulo">'+rot+'</span><textarea data-par="'+k+'" placeholder="'+ph+'" style="min-height:140px">'+esc(p[k])+'</textarea></label>';
   el.innerHTML = '<div class="pilha">'+campo("evidencias","Evidências comportamentais","O que o candidato fez ou disse que evidencia comportamento (com o cenário onde ocorreu)")+campo("positivos","Pontos positivos","")+campo("atencao","Pontos de atenção","")+campo("sintese","Síntese da entrevista (conclusão manual do entrevistador)","A decisão final é dos entrevistadores. Escreva a conclusão com suas palavras.")+'</div>';
   el.querySelectorAll("textarea[data-par]").forEach(ta=> ta.addEventListener("input", ()=>{ parecer(c.id)[ta.dataset.par] = ta.value; salvar(); }));
+}
+
+/* ===================== ABA PERCENTUAL (comparativo entre os candidatos) ===================== */
+function candidatosOrdenados(){ return db.candidatos.slice().sort((a,b)=> (a.criado_em||"").localeCompare(b.criado_em||"")); }
+function renderPercentual(c, el){
+  const cands = candidatosOrdenados();
+  let html = '<p class="mudo" style="margin-bottom:1rem">Aderência aos critérios avaliados nesta entrevista prática (12 competências, notas de 1 a 5 dadas pelo entrevistador). Não é uma garantia de desempenho futuro.</p>';
+  html += '<div class="pct-cards">';
+  cands.forEach(x=>{
+    const a = aderencia(x.id); const [rot,k] = faixaPct(a.pct);
+    html += '<div class="pct-card'+(x.id===c.id?' sel':'')+'"><div class="nome">'+esc(x.nome)+'</div>';
+    if(a.pct==null){ html += '<div class="num" style="color:var(--mudo)">—</div><p class="mudo pequeno-texto">Nenhuma competência com nota ainda. Preencha na aba Competências.</p></div>'; return; }
+    html += '<div class="num">'+String(a.pct).replace(".",",")+'%<small>'+a.soma+' de '+a.max+' pontos</small></div>';
+    html += '<div class="barra"><i class="'+classeBarra(a.pct)+'" style="width:'+a.pct+'%"></i></div>';
+    html += '<div><span class="chip '+k+'">'+rot+'</span>'+(a.n<COMPETENCIAS.length?' <span class="chip neutro">'+a.n+' de '+COMPETENCIAS.length+' competências avaliadas</span>':'')+'</div>';
+    html += '<div class="rotulo" style="margin-top:.5rem">Contribuíram para a aderência (nota 4–5)</div>'+(a.positivos.length?'<ul class="pct-lista">'+a.positivos.map(v=>'<li><b>'+esc(v.competencia)+'</b> ('+v.nota+'/5)'+(v.observacao.trim()?' — '+esc(v.observacao):'')+'</li>').join('')+'</ul>':'<p class="mudo pequeno-texto">Nenhuma competência com nota 4 ou 5.</p>');
+    html += '<div class="rotulo" style="margin-top:.5rem">Reduziram a aderência (nota 1–3)</div>'+(a.reduzem.length?'<ul class="pct-lista">'+a.reduzem.map(v=>'<li><b>'+esc(v.competencia)+'</b> ('+v.nota+'/5)'+(v.observacao.trim()?' — '+esc(v.observacao):'')+'</li>').join('')+'</ul>':'<p class="mudo pequeno-texto">Nenhuma competência com nota 3 ou menos.</p>');
+    html += '</div>';
+  });
+  html += '</div>';
+  // tabela comparativa por critério
+  html += '<h2 style="font-size:1.3rem;margin:1.2rem 0 .6rem">Critérios avaliados</h2><div class="rolagem"><table class="pct-tab"><thead><tr><th>Competência</th>'+cands.map(x=>'<th>'+esc(x.nome.split(" ")[0])+'</th>').join('')+'</tr></thead><tbody>';
+  COMPETENCIAS.forEach(k=>{
+    html += '<tr><td>'+esc(k)+'</td>'+cands.map(x=>{ const a=db.avaliacoes.find(v=>v.candidato_id===x.id&&v.competencia===k); if(!a||!a.nota) return '<td class="mudo">—</td>'; const p=a.nota*20; return '<td class="tabular"><b>'+a.nota+'/5</b> · '+p+'%<div class="barra mini"><i class="'+classeBarra(p)+'" style="width:'+p+'%"></i></div></td>'; }).join('')+'</tr>';
+  });
+  html += '<tr><td><b>Aderência geral</b></td>'+cands.map(x=>{ const a=aderencia(x.id); return '<td class="tabular"><b>'+(a.pct==null?'—':String(a.pct).replace(".",",")+'%')+'</b>'+(a.pct==null?'':' <span class="mudo">('+a.soma+'/'+a.max+')</span>')+'</td>'; }).join('')+'</tr></tbody></table></div>';
+  html += '<div class="pct-explica"><b>Como o percentual é calculado.</b> Cada competência recebe uma nota de 1 a 5 na aba Competências, com base nas respostas dos 10 cenários e no que foi observado ao vivo. O percentual é a soma das notas dividida pelo máximo possível (número de competências avaliadas × 5). Uma competência sem nota fica fora do cálculo. Faixas de leitura: 80% ou mais = alta aderência; 60–79% = boa; 40–59% = parcial; abaixo de 40% = baixa. O número resume a aderência aos critérios desta avaliação e deve ser lido junto com o parecer, as demais etapas do processo seletivo e as referências.</div>';
+  el.innerHTML = html;
+}
+
+/* ===================== ABA ATENÇÃO (todos os candidatos, organizado por candidato) ===================== */
+function renderAtencao(c, el){
+  const cands = candidatosOrdenados();
+  let html = '<p class="mudo" style="margin-bottom:1rem">Pontos que a gestão e o RH precisam observar em cada candidato. Itens marcados com <span class="chip alerta">necessita validação</span> não puderam ser concluídos só com a avaliação.</p>';
+  if((db.atencao_comum||"").trim()) html += '<div class="at-comum"><h2 style="font-size:1.2rem;margin:0 0 .5rem">Comum a todos os candidatos</h2><ul style="margin:0;padding-left:1.2em">'+linhasItens(db.atencao_comum).map(liItem).join('')+'</ul></div>';
+  cands.forEach(x=>{
+    const p = parecer(x.id), a = aderencia(x.id);
+    html += '<div class="at-cand'+(x.id===c.id?' sel':'')+'"><h2>'+esc(x.nome)+(a.pct!=null?' <span class="chip neutro">aderência '+String(a.pct).replace(".",",")+'%</span>':'')+'</h2>';
+    ITENS_ATENCAO.forEach(([k,rot])=>{
+      let itens = linhasItens(p.itens[k]);
+      if(k==="pontos" && !itens.length && p.atencao.trim()) itens = linhasItens(p.atencao); /* sem itens próprios, usa o texto do Parecer */
+      if(k==="aprofundar") itens = a.reduzem.map(v=>v.competencia+' (nota '+v.nota+'/5)'+(v.observacao.trim()?': '+v.observacao:'')).concat(itens);
+      html += '<div class="at-grupo"><h3>'+rot+'</h3>'+(itens.length?'<ul>'+itens.map(liItem).join('')+'</ul>':'<p class="mudo pequeno-texto" style="margin:0">Nada registrado.</p>')+'</div>';
+    });
+    html += '<details class="at-edit" data-cid="'+x.id+'"><summary>✎ Editar itens de '+esc(x.nome.split(" ")[0])+' (um item por linha; escreva "necessita validação" no fim da linha para marcar)</summary><div class="pilha">'+ITENS_ATENCAO.map(([k,rot])=>'<label><span class="rotulo">'+rot+'</span><textarea data-item="'+k+'">'+esc(p.itens[k])+'</textarea></label>').join('')+'</div></details>';
+    html += '</div>';
+  });
+  html += '<details class="at-edit"><summary>✎ Editar itens comuns a todos os candidatos</summary><div class="pilha"><textarea id="at-comum">'+esc(db.atencao_comum||"")+'</textarea></div></details>';
+  el.innerHTML = html;
+  el.querySelectorAll("details[data-cid] textarea[data-item]").forEach(ta=> ta.addEventListener("input", ()=>{ parecer(ta.closest("details").dataset.cid).itens[ta.dataset.item] = ta.value; salvar(); }));
+  el.querySelectorAll("details").forEach(dt=> dt.addEventListener("toggle", ()=>{ if(!dt.open) renderAtencao(c, el); }));
+  const tc = $("at-comum"); if(tc) tc.addEventListener("input", ()=>{ db.atencao_comum = tc.value; salvar(); });
 }
 
 /* ===================== RELATÓRIO ===================== */
@@ -903,6 +1080,21 @@ function renderRelatorio(c){
   html += '</div>';
   const avs = COMPETENCIAS.map(k=>db.avaliacoes.find(a=>a.candidato_id===c.id&&a.competencia===k)).filter(a=>a&&(a.nota||a.observacao.trim()));
   html += '<div class="rel-sec"><h2>Competências</h2>'+(avs.length?'<div class="rolagem"><table class="rel-comp"><thead><tr><th>Competência</th><th>Nota</th><th>Observação</th></tr></thead><tbody>'+avs.map(a=>'<tr><td>'+esc(a.competencia)+'</td><td class="tabular">'+(a.nota?a.nota+' / 5':'—')+'</td><td style="white-space:pre-wrap">'+esc(a.observacao)+'</td></tr>').join('')+'</tbody></table></div>':'<p class="mudo">Nenhuma competência avaliada.</p>')+'</div>';
+  const ad = aderencia(c.id);
+  if(ad.pct!=null){
+    html += '<div class="rel-sec"><h2>Percentual de aderência aos critérios</h2><div class="rel-ident"><div><b>Aderência geral</b><span style="font-size:1.6rem;font-weight:700;color:var(--azul)">'+String(ad.pct).replace(".",",")+'%</span> <span class="mudo">('+ad.soma+' de '+ad.max+' pontos · '+faixaPct(ad.pct)[0]+')</span></div><div><b>Competências avaliadas</b>'+ad.n+' de '+COMPETENCIAS.length+'</div></div>';
+    html += '<div class="rolagem"><table class="rel-comp"><thead><tr><th>Competência</th><th>Nota</th><th>%</th></tr></thead><tbody>'+ad.avs.map(a=>'<tr><td>'+esc(a.competencia)+'</td><td class="tabular">'+a.nota+' / 5</td><td class="tabular">'+(a.nota*20)+'%<div class="barra mini" style="max-width:160px"><i class="'+classeBarra(a.nota*20)+'" style="width:'+(a.nota*20)+'%"></i></div></td></tr>').join('')+'</tbody></table></div>';
+    if(ad.positivos.length) html += '<div class="rel-cen"><h3>Contribuíram para a aderência</h3><div class="rel-obs">'+ad.positivos.map(a=>'• '+esc(a.competencia)+' ('+a.nota+'/5)').join('\n')+'</div></div>';
+    if(ad.reduzem.length) html += '<div class="rel-cen"><h3>Reduziram a aderência</h3><div class="rel-obs">'+ad.reduzem.map(a=>'• '+esc(a.competencia)+' ('+a.nota+'/5)').join('\n')+'</div></div>';
+    html += '<p class="mudo pequeno-texto">Cálculo: soma das notas ÷ (competências avaliadas × 5). Representa aderência aos critérios desta avaliação, não garantia de desempenho futuro.</p></div>';
+  }
+  const grupos = ITENS_ATENCAO.map(([k,rot])=>{ let it = linhasItens(p.itens[k]); if(k==="aprofundar") it = ad.reduzem.map(v=>v.competencia+' (nota '+v.nota+'/5)').concat(it); return [rot,it]; }).filter(g=>g[1].length);
+  if(grupos.length || (db.atencao_comum||"").trim()){
+    html += '<div class="rel-sec"><h2>Pontos de atenção para a próxima etapa</h2>';
+    if((db.atencao_comum||"").trim()) html += '<div class="rel-cen"><h3>Comum a todos os candidatos avaliados</h3><ul class="at-lista">'+linhasItens(db.atencao_comum).map(liItem).join('')+'</ul></div>';
+    grupos.forEach(([rot,it])=>{ html += '<div class="rel-cen"><h3>'+rot+'</h3><ul class="at-lista">'+it.map(liItem).join('')+'</ul></div>'; });
+    html += '</div>';
+  }
   html += '<div class="rel-sec"><h2>Síntese da entrevista</h2><div class="rel-sintese">'+(p.sintese.trim()?esc(p.sintese):'<span class="mudo">Ainda não escrita. Preencha na aba Parecer do painel.</span>')+'</div><p class="mudo pequeno-texto" style="margin-top:1rem">Este relatório reúne respostas e observações. A conclusão e a decisão final são dos entrevistadores; o aplicativo não atribui aprovação ou reprovação.</p></div>';
   html += '<p class="mudo pequeno-texto" style="margin-top:2rem">Gerado em '+dataHoraBR(agora())+'.</p>';
   $("relatorio").innerHTML = html;
@@ -925,6 +1117,10 @@ function relatorioTexto(c){
     const o=db.observacoes.find(x=>x.candidato_id===c.id&&x.cenario_id===cen.id); if(o&&o.texto.trim()) L.push("Observação do entrevistador: "+o.texto); });
   L.push("","== AVALIAÇÃO DO ENTREVISTADOR =="); if(p.evidencias.trim()) L.push("Evidências comportamentais: "+p.evidencias); if(p.positivos.trim()) L.push("Pontos positivos: "+p.positivos); if(p.atencao.trim()) L.push("Pontos de atenção: "+p.atencao);
   L.push("","== COMPETÊNCIAS =="); COMPETENCIAS.forEach(k=>{ const a=db.avaliacoes.find(x=>x.candidato_id===c.id&&x.competencia===k); if(a&&(a.nota||a.observacao.trim())) L.push("• "+k+": "+(a.nota?a.nota+"/5":"sem nota")+(a.observacao.trim()?" — "+a.observacao:"")); });
+  const ad = aderencia(c.id);
+  if(ad.pct!=null){ L.push("","== PERCENTUAL DE ADERÊNCIA AOS CRITÉRIOS =="); L.push("Aderência geral: "+String(ad.pct).replace(".",",")+"% ("+ad.soma+" de "+ad.max+" pontos · "+faixaPct(ad.pct)[0]+" · "+ad.n+" de "+COMPETENCIAS.length+" competências avaliadas)"); ad.avs.forEach(a=>L.push("• "+a.competencia+": "+a.nota+"/5 = "+(a.nota*20)+"%")); L.push("Cálculo: soma das notas ÷ (competências avaliadas × 5). Aderência aos critérios desta avaliação, não garantia de desempenho futuro."); }
+  const gr = ITENS_ATENCAO.map(([k,rot])=>{ let it = linhasItens(p.itens[k]); if(k==="aprofundar") it = ad.reduzem.map(v=>v.competencia+" (nota "+v.nota+"/5)").concat(it); return [rot,it]; }).filter(g=>g[1].length);
+  if(gr.length || (db.atencao_comum||"").trim()){ L.push("","== PONTOS DE ATENÇÃO PARA A PRÓXIMA ETAPA =="); if((db.atencao_comum||"").trim()){ L.push("Comum a todos os candidatos:"); linhasItens(db.atencao_comum).forEach(s=>L.push("• "+s)); } gr.forEach(([rot,it])=>{ L.push(rot+":"); it.forEach(s=>L.push("• "+s)); }); }
   L.push("","== SÍNTESE DA ENTREVISTA ==", p.sintese.trim()||"(não escrita)");
   return L.join("\n");
 }
